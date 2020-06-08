@@ -13,20 +13,25 @@ test : ${ALL}
 
 
 use_directly : bin/use_directly
+	@ echo
 	export LD_LIBRARY_PATH=$$( realpath lib ) && bin/use_directly
 
 use_wrapper : bin/use_wrapper
+	@ echo
 	export LD_LIBRARY_PATH=$$( realpath lib ) && bin/use_wrapper
 
 
 bin/use_directly : ${LIB}
+	@ echo
 	mkdir -p bin && nim compile --app:console --threads:off --opt:none --out:bin/use_directly use_directly.nim
 
 bin/use_wrapper : ${LIB}
+	@ echo
 	mkdir -p bin && nim compile --app:console --threads:off --opt:none --out:bin/use_wrapper use_wrapper.nim
 
 
 lib/library.so :
+	@ echo
 	mkdir -p lib && nim compile --app:lib --threads:off --opt:none --out:lib/library.so library.nim
 
 clean :
