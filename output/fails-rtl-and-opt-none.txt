@@ -1,0 +1,25 @@
+
+rm -rf bin lib
+
+
+mkdir -p lib && nim c --app:lib --threads:on --opt:none -d:createNimRtl -d:release '--warning[UnusedImport]:off' --out:lib/libnimrtl.so nimrtl.nim
+
+mkdir -p lib && nim c --app:lib -d:useNimRtl --threads:on --opt:none --out:lib/library.so library.nim
+
+mkdir -p bin && nim c --app:console -d:useNimRtl --threads:on --opt:none --out:bin/use_directly use_directly.nim
+
+export LD_LIBRARY_PATH=$( realpath lib ) && bin/use_directly
+usage/direct - enter
+library.foo() - enter
+library.foo() - exit
+usage/direct - exit
+
+mkdir -p bin && nim c --app:console -d:useNimRtl --threads:on --opt:none --out:bin/use_wrapper use_wrapper.nim
+
+export LD_LIBRARY_PATH=$( realpath lib ) && bin/use_wrapper
+usage/wrapped - enter
+wrapper.foo() - enter
+library.foo() - enter
+Segmentation fault (core dumped)
+Makefile:40: recipe for target 'use_wrapper' failed
+make: *** [use_wrapper] Error 139
